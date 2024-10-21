@@ -68,7 +68,7 @@ git init
 
 
 
-The server will start on `http://localhost:3000` (or the port specified in your .env file).
+The server will start on `http://localhost:4949` (or the port specified in your .env file).
 
 ## Project Structure
 
@@ -86,7 +86,7 @@ The server will start on `http://localhost:3000` (or the port specified in your 
 │   ├── services/
 │   ├── types/
 │   ├── utils/
-│   └── app.ts
+│   └── index.ts
 ├── tests/
 ├── .env.example
 ├── .eslintrc.js
@@ -103,8 +103,17 @@ Configuration is managed through environment variables. See `.env.example` for a
 ## API Routes
 
 - `GET /health`: Health check endpoint
+  - Protected with Basic Auth
+  - Default credentials: username: `admin`, password: `admin`
+
 - `GET /metrics`: Prometheus metrics endpoint
+  - Protected with Basic Auth
+  - Default credentials: username: `admin`, password: `admin`
+
 - Add your custom routes here
+
+**Important Security Note:** 
+The `/health` and `/metrics` routes are protected with Basic Authentication using default credentials. It is **strongly recommended** to change these credentials before deploying to production. You can modify the credentials in the `.env` file:
 
 ## Logging
 

@@ -26,31 +26,47 @@ This is a robust Express server template built with TypeScript, incorporating be
 - Node.js (v14 or later)
 - npm or yarn
 
+
+   ```
 ## Getting Started
 
-1. Clone the repository and remove Git history:
+### Using GitHub Template
+
+This repository is set up as a GitHub template. You can create a new project based on this template by clicking the "Use this template" button at the top of the repository page on GitHub.
+
+Alternatively, you can use the following command to create a new project based on this template:
+
+```bash
+git clone https://github.com/ajaysehwal/express-typescript-template.git my-project
+cd my-project
+```
+
+After cloning, remember to remove the existing Git history and initialize a new repository:
+
+```bash
+rm -rf .git
+git init
+```
+
+### Installation and Setup
+
+1. Install dependencies:
    ```bash
-   git clone https://github.com/ajaysehwal/express-typescript-template.git my-project
-   cd my-project
-   rm -rf .git
+   yarn install
    ```
 
-2. Initialize a new Git repository (optional):
-   ```bash
-   git init
-   ```
-
-
-3. Set up environment variables:
+2. Set up environment variables:
    ```bash
    cp .env.example .env
    ```
    Edit `.env` with your specific configuration.
 
-4. Start the development server:
+3. Start the development server:
    ```bash
    yarn dev
    ```
+
+
 
 The server will start on `http://localhost:3000` (or the port specified in your .env file).
 

@@ -37,7 +37,7 @@ This repository is set up as a GitHub template. You can create a new project bas
 Alternatively, you can use the following command to create a new project based on this template:
 
 ```bash
-git clone https://github.com/ajaysehwal/express-typescript-template.git my-project
+git clone https://github.com/ajaysehwal/express-ts-template.git my-project
 cd my-project
 ```
 

@@ -5,8 +5,11 @@ import { Monitoring, log } from "./services";
 import { AppMiddleware } from "./middlewares/app.middleware";
 import http from "http";
 import os from "os";
-import { env } from "./configs/env.config";
+import { config } from "./configs";
 import cluster from "cluster";
+import swaggerUi from "swagger-ui-express";
+import swaggerJsdoc from "swagger-jsdoc";
+import compression from "compression";
 import { routes } from "./managers/RouteManager";
 export class Server {
   private app: Application;
@@ -26,6 +29,7 @@ export class Server {
     this.app.use(this.middle.errorHandler);
     this.app.use(this.monitoring.middleware());
     this.secuity.enable();
+    this.app.use(compression());
     this.app.use(express.json({ limit: "1mb" }));
     this.app.use(express.urlencoded({ extended: true, limit: "1mb" }));
     this.app.use(
@@ -34,8 +38,27 @@ export class Server {
       })
     );
     this.monitoring.initEndpoints(this.app);
+    const swaggerSpec = swaggerJsdoc(this.swaggerOptions());
+    this.app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
     this.app.use("/", routes);
   }
+  private swaggerOptions = () => ({
+    definition: {
+      openapi: "3.0.0",
+      info: {
+        title: "Express API with Swagger",
+        version: "1.0.0",
+        description: "A sample Express API",
+      },
+      servers: [
+        {
+          url: "http://localhost:5050",
+        },
+      ],
+    },
+    apis: ["./routes/*.ts"],
+  });
+
   private setUpCluster() {
     const numCPUs = os.cpus().length;
     if (cluster.isPrimary) {
@@ -61,8 +84,8 @@ export class Server {
     }
   }
   private startWorker() {
-    const server = this.app.listen(env.server.port, () => {
-      log.info(`Worker ${process.pid} running on port ${env.server.port}`);
+    const server = this.app.listen(config.server.port, () => {
+      log.info(`Worker ${process.pid} running on port ${config.server.port}`);
     });
     process.on("SIGTERM", () => this.shutdown(server));
     process.on("SIGINT", () => this.shutdown(server));
@@ -90,7 +113,7 @@ export class Server {
     }, 10000);
   }
   public run() {
-    if (env.server.cluster) {
+    if (config.server.cluster) {
       this.setUpCluster();
     } else {
       this.startWorker();

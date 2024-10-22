@@ -1,7 +1,7 @@
 import { log } from "../services";
 import { Request, Response, NextFunction } from "express";
 import { randomBytes } from "crypto";
-import { env } from "../configs/env.config";
+import { config } from "../configs";
 
 interface ReqId extends Request {
   id?: string;
@@ -53,7 +53,7 @@ export class AppMiddleware {
 
     res.status(err.status || 500).json({
       error: {
-        message: env.isProduction ? "Internal Server Error" : err.message,
+        message: config.isProduction ? "Internal Server Error" : err.message,
         errorId,
         requestId: req.id,
       },

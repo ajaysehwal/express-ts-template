@@ -1,4 +1,4 @@
-import { env } from "../configs/env.config";
+import { config } from "../configs";
 import express, { Application, Request } from "express";
 import hpp from "hpp";
 import cors from "cors";
@@ -32,7 +32,7 @@ export class Security {
         xssFilter: true,
       }),
     );
-    this.app.set("trust proxy", env.isProduction);
+    this.app.set("trust proxy", config.isProduction);
     this.app.use(this.limiter());
     this.header(this.app);
   }
@@ -50,8 +50,8 @@ export class Security {
   }
   private corsConfiguration() {
     return {
-      origin: env.cors.origin,
-      methods: env.cors.methods,
+      origin: config.cors.origin,
+      methods: config.cors.methods,
       allowedHeaders: ["Content-Type", "Authorization"],
       credentials: true,
       optionsSuccessStatus: 200,
@@ -59,8 +59,8 @@ export class Security {
   }
   private limiter() {
     return rateLimit({
-      windowMs: env.rateLimit.windowMs,
-      max: env.rateLimit.max,
+      windowMs: config.rateLimit.windowMs,
+      max: config.rateLimit.max,
       keyGenerator: (req: Request) =>
         (req.headers["x-forwarded-for"] as string)?.split(",")[0] ||
         (req.ip as string),

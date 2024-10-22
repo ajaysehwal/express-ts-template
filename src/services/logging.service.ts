@@ -2,7 +2,7 @@ import winston from "winston";
 import DailyRotateFile from "winston-daily-rotate-file";
 import fs from "fs";
 import safeStringify from "fast-safe-stringify";
-import { env as config } from "../configs/env.config";
+import { config } from "../configs";
 
 // Define log levels with corresponding colors
 const LOG_LEVELS = {

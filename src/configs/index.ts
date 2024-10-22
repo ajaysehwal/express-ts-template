@@ -1,10 +1,10 @@
 import { envConfig } from "../constants/env.const";
-import { EnvConfig, envSchema } from "../schema/env.schema";
+import { EnvConfig, envSchema } from "../schema";
 import { loadEnvFile } from "../utils";
 import { z } from "zod";
 
-export class Env {
-  private static instance: Env;
+export class Config {
+  private static instance:Config ;
   private config: EnvConfig;
   private envSpecificConfig: (typeof envConfig)[keyof typeof envConfig];
 
@@ -25,11 +25,11 @@ export class Env {
     }
   }
 
-  public static getInstance(): Env {
-    if (!Env.instance) {
-      Env.instance = new Env();
+  public static getInstance(): Config {
+    if (!Config.instance) {
+      Config.instance = new Config();
     }
-    return Env.instance;
+    return Config.instance;
   }
 
   public getConfig() {
@@ -90,10 +90,10 @@ export class Env {
       isProduction: this.envSpecificConfig.isProduction,
     } as const;
   }
-  public get<K extends keyof ReturnType<Env["getConfig"]>>(
+  public get<K extends keyof ReturnType<Config["getConfig"]>>(
     key: K,
-  ): ReturnType<Env["getConfig"]>[K] {
+  ): ReturnType<Config["getConfig"]>[K] {
     return this.getConfig()[key];
   }
 }
-export const env = Env.getInstance().getConfig();
+export const config = Config.getInstance().getConfig();

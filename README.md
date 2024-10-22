@@ -54,7 +54,11 @@ git init
    ```bash
    yarn install
    ```
-
+2. Set up Object-relational mapping (ORM):
+   ```bash
+   yarn setup:ORM
+   ```
+   
 2. Set up environment variables:
    ```bash
    cp .env.example .env

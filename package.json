@@ -28,7 +28,7 @@
     "doc": "typedoc",
     "build:docker": "docker build -t express-ts-template .",
     "clean": "rimraf dist coverage",
-    "prestart": "build",
+    "prestart": "build"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

@@ -5,7 +5,7 @@ const clear = require("clear");
 const figlet = require("figlet");
 const { exec } = require("child_process");
 const { Select, Input, Password } = require("enquirer");
-const ProgressIndicator=require('../utils/Indicator')
+const ProgressIndicator = require("../utils/Indicator");
 const Logger = require("../utils/Logger");
 const {
   migrationContent,
@@ -112,6 +112,7 @@ class PrismaSetup {
     Logger.info("Configuring Prisma...");
 
     try {
+      const dbconfig = await this.getDatabaseConfig();
       // Install all dependencies in one command
       await CommandExecutor.execute(
         ["-D prisma", "@prisma/client"],
@@ -120,19 +121,10 @@ class PrismaSetup {
 
       await Promise.all([
         await CommandExecutor.execute("npx prisma init"),
-        this.generateSchema(),
+        this.generateSchema(dbconfig),
       ]);
 
-      const dbUrl = await new Input({
-        name: "database_url",
-        message: "Database URL:",
-        initial: "postgresql://user:password@localhost:5432/dbname",
-      }).run();
-
-      await Promise.all([
-        fs.writeFile(".env", `DATABASE_URL="${dbUrl}"\n`),
-        this.updatePackageJson(),
-      ]);
+      await Promise.all([this.updatePackageJson()]);
 
       Logger.success("Prisma setup completed!");
     } catch (error) {
@@ -140,11 +132,26 @@ class PrismaSetup {
       throw error;
     }
   }
+  static async getDatabaseConfig() {
+    const dbType = await new Select({
+      name: "database",
+      message: "Database type:",
+      choices: [
+        "cockroachdb",
+        "mongodb",
+        "mysql",
+        "postgresql",
+        "sqlite",
+        "sqlserver",
+      ],
+    }).run();
+    return dbType;
+  }
 
-  static async generateSchema() {
+  static async generateSchema(provider) {
     const schema = `
 datasource db {
-  provider = "postgresql"
+  provider = "${provider}"
   url      = env("DATABASE_URL")
 }
 

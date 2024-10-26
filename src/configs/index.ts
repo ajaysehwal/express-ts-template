@@ -1,10 +1,10 @@
 import { envConfig } from "../constants/env.const";
-import { EnvConfig, envSchema } from "../schema";
+import { EnvConfig, envSchema } from "../zod/env.zod";
 import { loadEnvFile } from "../utils";
 import { z } from "zod";
 
 export class Config {
-  private static instance:Config ;
+  private static instance:Config;
   private config: EnvConfig;
   private envSpecificConfig: (typeof envConfig)[keyof typeof envConfig];
 
@@ -36,7 +36,6 @@ export class Config {
     return {
       server: {
         port: this.config.PORT,
-        apiVersion: this.config.API_VERSION,
         nodeEnv: this.config.NODE_ENV,
         cluster: false,
         admin_user:this.config.ADMIN_USER,

@@ -2,7 +2,7 @@ import express, { Application } from "express";
 import { Security } from "./security";
 import morgan from "morgan";
 import { Monitoring, log } from "./services";
-import { AppMiddleware } from "./middlewares/app.middleware";
+import { AppMiddleware } from "./guard/app.guard";
 import http from "http";
 import os from "os";
 import { config } from "./configs";
@@ -11,6 +11,7 @@ import swaggerUi from "swagger-ui-express";
 import swaggerJsdoc from "swagger-jsdoc";
 import compression from "compression";
 import { routes } from "./managers/RouteManager";
+import "module-alias/register";
 export class Server {
   private app: Application;
   private secuity: Security;
@@ -39,8 +40,8 @@ export class Server {
     );
     this.monitoring.initEndpoints(this.app);
     const swaggerSpec = swaggerJsdoc(this.swaggerOptions());
-    this.app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
     this.app.use("/", routes);
+    this.app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
   }
   private swaggerOptions = () => ({
     definition: {

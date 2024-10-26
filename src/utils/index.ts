@@ -1,5 +1,6 @@
 import path from "path";
 import dotenv from "dotenv";
+import swaggerJsdoc from "swagger-jsdoc";
 
 export const loadEnvFile = () => {
   const nodeEnv = process.env.NODE_ENV || "development";
@@ -13,3 +14,32 @@ export const loadEnvFile = () => {
     }
   }
 };
+
+
+export const swaggerOptions:swaggerJsdoc.Options={
+    definition:{
+      openapi: '3.0.0',
+      info: {
+        title: 'Express API with Swagger',
+        version: '1.0.0',
+        description: 'A sample Express API',
+      },
+      components:{
+        securitySchemes:{
+          BearerAuth:{
+            type: 'http',
+            scheme: 'bearer',
+            bearerFormat: 'JWT'
+          }
+        }
+      },
+      security:[
+        {
+          bearerAuth:[]
+        }
+      ]
+    },
+    apis: [
+      './src/routes/*.ts'
+    ]
+}

@@ -13,6 +13,32 @@ export class HealthCheck extends BaseRoute {
     this.totalResponseTime = 0;
   }
   public initRoutes() {
+     /**
+   * @openapi
+   * /health:
+   *   get:
+   *     tags:
+   *       - HealthCheck
+   *     description: Responds if the app is up and running
+   *     responses:
+   *       200:
+   *         description: App is up and running
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 status:
+   *                   type: string
+   *                   example: "OK"
+   *                 message:
+   *                   type: string
+   *                   example: "Server is healthy"
+   *                 timestamp:
+   *                   type: string
+   *                   example: "2023-04-20T18:30:00.000Z"
+   */
+
     this.router.get(this.path, this.createHealthAuth(), this.getHealthCheck);
   }
   private getHealthCheck = async (_: Request, res: Response) => {

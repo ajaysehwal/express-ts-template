@@ -1,4 +1,4 @@
-import express, { Application } from "express";
+import express, { Application,Response,Request } from "express";
 import { Security } from "./security";
 import morgan from "morgan";
 import { Monitoring, log } from "./services";
@@ -11,7 +11,7 @@ import swaggerUi from "swagger-ui-express";
 import swaggerJsdoc from "swagger-jsdoc";
 import compression from "compression";
 import { routes } from "./managers/RouteManager";
-import "module-alias/register";
+import { swaggerOptions } from "./utils";
 export class Server {
   private app: Application;
   private secuity: Security;
@@ -39,26 +39,15 @@ export class Server {
       })
     );
     this.monitoring.initEndpoints(this.app);
-    const swaggerSpec = swaggerJsdoc(this.swaggerOptions());
+    const swaggerSpec = swaggerJsdoc(swaggerOptions);
     this.app.use("/", routes);
-    this.app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+    this.app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+    this.app.get('docs.json',(_:Request,res:Response)=>{
+        res.setHeader("Content-Type","application/json");
+        res.send(swaggerSpec)
+    })
+    log.info(`Docs available at http://localhost:${config.server.port}/docs`)
   }
-  private swaggerOptions = () => ({
-    definition: {
-      openapi: "3.0.0",
-      info: {
-        title: "Express API with Swagger",
-        version: "1.0.0",
-        description: "A sample Express API",
-      },
-      servers: [
-        {
-          url: "http://localhost:5050",
-        },
-      ],
-    },
-    apis: ["./routes/*.ts"],
-  });
 
   private setUpCluster() {
     const numCPUs = os.cpus().length;
